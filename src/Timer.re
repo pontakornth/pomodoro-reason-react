@@ -18,7 +18,7 @@ let make = _ => {
       | Running => "PAUSE"
       | Stop => "START OVER"
       };
-    }
+    };
     let timerStart = _ => {
       let timer = Js.Global.setInterval(_ => {
         setTimeLeft(time => {
@@ -26,7 +26,10 @@ let make = _ => {
             time - 1
           } else {
             setTimerState(_ => Stop);
-            setTimerRef(_ => None);
+            switch timerRef {
+              | Some(t) => Js.Global.clearInterval(t)
+              | None => ()
+            };
             0
           }
         })
@@ -35,14 +38,34 @@ let make = _ => {
       setTimerRef(_ => Some(timer));
       Js.log("Timer should start");
     };
+    let buttonBehavior = _ => {
+      switch timerState {
+        | Start => timerStart();
+        | Running => {
+            setTimerState(_ => Stop);
+            switch timerRef {
+              | Some(t) => Js.Global.clearInterval(t)
+              | None => ()
+            }
+        }
+        | Stop => {
+            setTimeLeft(_ => 25 * 60);
+            setTimerState(_ => Start);
+            switch timerRef {
+              | Some(t) => Js.Global.clearInterval(t)
+              | None => ()
+            }
+        }
+      };
+    };
     <div className="timer">
       <div className="mode-menu">
-      <button className="timer-button">{React.string("Work")}</button>
-      <button className="timer-button">{React.string("Short Break")}</button>
-      <button className="timer-button">{React.string("Long Break")}</button>
+      <button disabled={timerState == Running} className="timer-button">{React.string("Work")}</button>
+      <button disabled={timerState == Running} className="timer-button">{React.string("Short Break")}</button>
+      <button disabled={timerState == Running} className="timer-button">{React.string("Long Break")}</button>
       </div>
       <h1 className="timer-header">{React.string("Pomodoro Timer")}</h1>
       <h2 className="timer-time">{React.int(minutes())}{React.string(":")}{React.int(seconds())}</h2>
-      <button onClick={timerStart} className="timer-button">{React.string(buttonText())}</button>
+      <button onClick={buttonBehavior} className="timer-button">{React.string(buttonText())}</button>
     </div>
 }

@@ -16,6 +16,7 @@ function Timer(Props) {
         
       });
   var setTimerRef = match$1[1];
+  var timerRef = match$1[0];
   var match$2 = React.useState(function () {
         return /* Start */0;
       });
@@ -32,48 +33,78 @@ function Timer(Props) {
       
     }
   };
-  var timerStart = function (param) {
-    var timer = setInterval((function (param) {
-            return Curry._1(setTimeLeft, (function (time) {
-                          if (time > 0) {
-                            return time - 1 | 0;
-                          } else {
-                            Curry._1(setTimerState, (function (param) {
-                                    return /* Stop */2;
-                                  }));
-                            Curry._1(setTimerRef, (function (param) {
-                                    
-                                  }));
-                            return 0;
-                          }
-                        }));
-          }), 1000);
-    Curry._1(setTimerState, (function (param) {
-            return /* Running */1;
-          }));
-    Curry._1(setTimerRef, (function (param) {
-            return Caml_option.some(timer);
-          }));
-    console.log("Timer should start");
-    
+  var buttonBehavior = function (param) {
+    switch (timerState) {
+      case /* Start */0 :
+          var timer = setInterval((function (param) {
+                  return Curry._1(setTimeLeft, (function (time) {
+                                if (time > 0) {
+                                  return time - 1 | 0;
+                                } else {
+                                  Curry._1(setTimerState, (function (param) {
+                                          return /* Stop */2;
+                                        }));
+                                  if (timerRef !== undefined) {
+                                    clearInterval(Caml_option.valFromOption(timerRef));
+                                  }
+                                  return 0;
+                                }
+                              }));
+                }), 1000);
+          Curry._1(setTimerState, (function (param) {
+                  return /* Running */1;
+                }));
+          Curry._1(setTimerRef, (function (param) {
+                  return Caml_option.some(timer);
+                }));
+          console.log("Timer should start");
+          return ;
+      case /* Running */1 :
+          Curry._1(setTimerState, (function (param) {
+                  return /* Stop */2;
+                }));
+          if (timerRef !== undefined) {
+            clearInterval(Caml_option.valFromOption(timerRef));
+            return ;
+          } else {
+            return ;
+          }
+      case /* Stop */2 :
+          Curry._1(setTimeLeft, (function (param) {
+                  return 1500;
+                }));
+          Curry._1(setTimerState, (function (param) {
+                  return /* Start */0;
+                }));
+          if (timerRef !== undefined) {
+            clearInterval(Caml_option.valFromOption(timerRef));
+            return ;
+          } else {
+            return ;
+          }
+      
+    }
   };
   return React.createElement("div", {
               className: "timer"
             }, React.createElement("div", {
                   className: "mode-menu"
                 }, React.createElement("button", {
-                      className: "timer-button"
+                      className: "timer-button",
+                      disabled: timerState === /* Running */1
                     }, "Work"), React.createElement("button", {
-                      className: "timer-button"
+                      className: "timer-button",
+                      disabled: timerState === /* Running */1
                     }, "Short Break"), React.createElement("button", {
-                      className: "timer-button"
+                      className: "timer-button",
+                      disabled: timerState === /* Running */1
                     }, "Long Break")), React.createElement("h1", {
                   className: "timer-header"
                 }, "Pomodoro Timer"), React.createElement("h2", {
                   className: "timer-time"
                 }, timeLeft / 60 | 0, ":", timeLeft % 60), React.createElement("button", {
                   className: "timer-button",
-                  onClick: timerStart
+                  onClick: buttonBehavior
                 }, buttonText(undefined)));
 }
 
