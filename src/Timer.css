@@ -1,0 +1,21 @@
+.timer {
+    @apply bg-blue-200 p-8 w-3/4 text-center;
+}
+.timer-header {
+    @apply text-blue-600 text-4xl font-bold;
+}
+.timer-time {
+    @apply text-blue-500 text-3xl font-semibold;
+}
+.timer-button {
+    @apply px-4 py-2 bg-blue-600 text-blue-100 font-bold;
+}
+.timer-button:hover {
+    @apply bg-blue-400 text-white;
+}
+.mode-menu {
+    @apply p-4 flex justify-center;
+}
+.mode-menu > * {
+    @apply mx-4
+}

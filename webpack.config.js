@@ -1,0 +1,49 @@
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const isProduction = process.env.NODE_ENV === 'production'
+const outputDir = path.join(__dirname,'build/')
+
+module.exports = {
+  entry: './src/Index.bs.js',
+  // If you ever want to use webpack during development, change 'production'
+  // to 'development' as per webpack documentation. Again, you don't have to
+  // use webpack or any other bundler during development! Recheck README if
+  // you didn't know this
+  mode: isProduction ? 'production': 'development',
+  output: {
+    path: outputDir,
+    filename: 'index.js',
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html',
+      inject: false
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: 
+        [
+          'style-loader',
+          { loader: 'css-loader', options: { importLoaders: 1}},
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: './'
+              }
+            }
+          }
+        ]
+      },
+    ]
+  },
+  devServer: {
+    compress: true,
+    contentBase: outputDir,
+    port: process.env.PORT || 8000,
+    historyApiFallback: true
+  }
+};

@@ -1,0 +1,13 @@
+@tailwind base;
+h1 {
+    @apply text-2xl text-blue-600;
+}
+body {
+    height: 100vh;
+    @apply bg-blue-300;
+}
+.app-container {
+    @apply h-screen flex justify-center items-center w-full;
+}
+@tailwind utilities;
+@tailwind components;
