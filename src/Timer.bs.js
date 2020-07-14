@@ -8,7 +8,7 @@ var Caml_option = require("bs-platform/lib/js/caml_option.js");
 
 function Timer(Props) {
   var match = React.useState(function () {
-        return 1500;
+        return 3;
       });
   var setTimeLeft = match[1];
   var timeLeft = match[0];
@@ -16,7 +16,6 @@ function Timer(Props) {
         
       });
   var setTimerRef = match$1[1];
-  var timerRef = match$1[0];
   var match$2 = React.useState(function () {
         return /* Start */0;
       });
@@ -35,25 +34,28 @@ function Timer(Props) {
   };
   var timerStart = function (param) {
     var timer = setInterval((function (param) {
-            if (timeLeft > 0) {
-              return Curry._1(setTimeLeft, (function (time) {
+            return Curry._1(setTimeLeft, (function (time) {
+                          if (time > 0) {
                             return time - 1 | 0;
-                          }));
-            } else if (timerRef !== undefined) {
-              clearInterval(Caml_option.valFromOption(timerRef));
-              return Curry._1(setTimerState, (function (param) {
-                            return /* Stop */2;
-                          }));
-            } else {
-              return ;
-            }
+                          } else {
+                            Curry._1(setTimerState, (function (param) {
+                                    return /* Stop */2;
+                                  }));
+                            Curry._1(setTimerRef, (function (param) {
+                                    
+                                  }));
+                            return 0;
+                          }
+                        }));
           }), 1000);
     Curry._1(setTimerState, (function (param) {
             return /* Running */1;
           }));
-    return Curry._1(setTimerRef, (function (param) {
-                  return Caml_option.some(timer);
-                }));
+    Curry._1(setTimerRef, (function (param) {
+            return Caml_option.some(timer);
+          }));
+    console.log("Timer should start");
+    
   };
   return React.createElement("div", {
               className: "timer"

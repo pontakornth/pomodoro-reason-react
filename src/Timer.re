@@ -7,7 +7,7 @@ type timerState =
 
 [@react.component]
 let make = _ => {
-    let (timeLeft,setTimeLeft) = React.useState(_ => 25 * 60);
+    let (timeLeft,setTimeLeft) = React.useState(_ => 3);
     let (timerRef, setTimerRef) = React.useState(_ => None);
     let (timerState, setTimerState) = React.useState(_ => Start);
     let minutes = _ => timeLeft / 60;
@@ -21,20 +21,19 @@ let make = _ => {
     }
     let timerStart = _ => {
       let timer = Js.Global.setInterval(_ => {
-        if (timeLeft > 0) {
-          setTimeLeft(time => time - 1);
-        } else {
-          switch timerRef {
-          | Some(t) => {
-            Js.Global.clearInterval(t);
+        setTimeLeft(time => {
+          if (time > 0) {
+            time - 1
+          } else {
             setTimerState(_ => Stop);
-          };
-          | None => ()
-          };
-        }
+            setTimerRef(_ => None);
+            0
+          }
+        })
       }, 1000);
-      setTimerState(_ => Running)
+      setTimerState(_ => Running);
       setTimerRef(_ => Some(timer));
+      Js.log("Timer should start");
     };
     <div className="timer">
       <div className="mode-menu">
